@@ -1,4 +1,5 @@
 <?php
+require_once("session.php");
 require_once("connect.php");
 
 if(isset($_POST["add_equipment"]))

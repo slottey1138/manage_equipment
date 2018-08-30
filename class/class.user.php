@@ -51,12 +51,12 @@ class USER
 		{
 			$stmt = $this->conn->prepare("SELECT mb_id, mb_pass FROM tbl_member WHERE mb_id =:mb_id");
 			$stmt->execute(array(':mb_id'=>$mb_id));
-			$userRow=$stmt->fetch(PDO::FETCH_ASSOC);
+			$row=$stmt->fetch(PDO::FETCH_ASSOC);
 			if($stmt->rowCount() == 1)
 			{
-				if($mb_pass == $userRow['mb_pass'])
+				if($mb_pass == $row['mb_pass'])
 				{
-					$_SESSION['user_session'] = $userRow['mb_id'];
+					$_SESSION['mb_session'] = $row['mb_id'];
 					return true;
 				}
 				else
@@ -73,7 +73,7 @@ class USER
 	
 	public function is_loggedin()
 	{
-		if(isset($_SESSION['user_session']))
+		if(isset($_SESSION['mb_session']))
 		{
 			return true;
 		}
@@ -87,7 +87,7 @@ class USER
 	public function doLogout()
 	{
 		session_destroy();
-		unset($_SESSION['user_session']);
+		unset($_SESSION['mb_session']);
 		return true;
 	}
 }

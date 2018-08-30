@@ -1,21 +1,21 @@
 <?php
-session_start();
-require_once("php/connect.php");
+require_once("class/class.user.php");
+
+$login = new USER();
+
 
 if(isset($_POST["login"]))
 {
-  $mb_id = $_POST["txt_mb_id"];
-  $mb_pass = $_POST["txt_mb_pass"];
-
-  $sql = "SELECT * FROM tbl_member WHERE mb_id = '$mb_id' AND mb_pass = '$mb_pass'";
-  $query = mysqli_query($conn,$sql);
-  $row = mysqli_fetch_assoc($query);
-  if(mysqli_num_rows($query) ==1){
-    $_SESSION["mb_id"] = $row["mb_id"];
-    echo "<script>location='php/homepage.php'</script>";
-  }
-  else {
-    $Error = "<p style='color:red'>ข้อมูลไม่ถูกต้อง !!<p/>";
+  $mb_id = strip_tags($_POST['txt_mb_id']);
+	$mb_pass = strip_tags($_POST['txt_mb_pass']);
+		
+	if($login->doLogin($mb_id,$mb_pass))
+	{
+		  $login->redirect('php/homepage.php');
+	}
+	else
+	{
+    $error[] = "ข้อมูลไม่ถูกต้อง !";
   }
 }
 ?>
@@ -29,6 +29,9 @@ if(isset($_POST["login"]))
     <title>เข้าสู่ระบบ</title>
     <link rel="stylesheet" href="css/cosmo.css">
     <link href="https://fonts.googleapis.com/css?family=Kanit" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     <style>
      body{
        background-color: #dcdcdc;
@@ -40,9 +43,10 @@ if(isset($_POST["login"]))
     <div class="container col-md-5 mt-5 well">
     <center>
     <?php
-    if(isset($Error)){
+    if(isset($error)){
       echo "<div class='alert alert-dismissible alert-danger'>
-     ข้อมูลไม่ถูกต้อง
+      <button type='button' class='close' data-dismiss='alert'>&times;</button>
+      <strong>Oh snap!</strong>
     </div>";
     }
     ?>
@@ -60,7 +64,7 @@ if(isset($_POST["login"]))
     </div>
     <button type="submit" name="login" class="btn btn-success col-md-3">เข้าสู่ระบบ</button>
     <button type="reset" class="btn btn-secondary col-md-3">ยกเลิก</button>
-    <a href="register.php" class=" btn btn-info col-md-3" style="float:right" >ลงทะเบียน</a>
+    <a href="register.php" class="btn btn-info col-md-3" style="float:right" >ลงทะเบียน</a>
   </fieldset>
 </form>
     </div>

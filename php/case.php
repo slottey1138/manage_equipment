@@ -1,4 +1,6 @@
 <?php  
+require_once("session.php");
+
  $conn = mysqli_connect("localhost", "root", "12345678", "manage_equipment");  
  $query = "SELECT * FROM tbl_case ORDER BY eq_id desc";  
  $result = mysqli_query($conn, $query);  

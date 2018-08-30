@@ -1,4 +1,5 @@
 <?php
+require_once("session.php");
 require_once("connect.php");
 
 $eq_id = $_GET["eq_id"];
