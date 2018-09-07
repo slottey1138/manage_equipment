@@ -2,37 +2,6 @@
 require_once("session.php");
 require_once("connect.php");
 
-$eq_status = "in";
-if(isset($_POST["btn_add_eq"]))
-{
-  $eq_serial_number = $_POST["txt_eq_serial"];
-  $eq_name_id = $_POST["eq_name_id"];
-  $eq_name = $_POST["eq_name_name"];
-  $eq_type = $_POST["eq_type"];
-  $eq_status = "in";
-
-  $check_eq = "SELECT * FROM tbl_equipment WHERE eq_name = '$eq_name' AND eq_serial_number = '$eq_serial_number'
-  AND eq_type = '$eq_type' ";
-  $query_eq = mysqli_query($conn, $check_eq);
-  if(mysqli_num_rows($query_eq) == 1)
-  {
-      echo "<script>alert('มีข้อมูลอุปกรณ์นี้ในระบบแล้ว')</script>";
-      echo "<script>location='view-detail.php?eq_name_id='$eq_name_id'</script>";
-  }
-  else {
-      $insert_eq = "INSERT INTO tbl_equipment (eq_name,eq_serial_number,eq_type,eq_status,eq_name_id)
-      VALUES ('$eq_name','$eq_serial_number','$eq_type','$eq_status','$eq_name_id')";
-      $result = mysqli_query($conn, $insert_eq);
-      if($result)
-      {
-          echo "<script>alert('เพิ่มอุปกรณ์เสร็จเรียบร้อย')</script>";
-          echo "<script>location='view-detail.php?eq_name_id='$eq_name_id'</script>";
-      }
-      else{
-          echo "Error: " . $insert_eq . "<br>" . $conn->error;
-      }
-  }
-}
 ?>
   <!DOCTYPE html>
   <html lang="en">
@@ -120,48 +89,6 @@ if(isset($_POST["btn_add_eq"]))
           <?php  $i++;}} else {echo "ไม่มีข้อมูลอุปกรณ์";}?>
       </table>
     </div>
-
-<div class="modal" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalCenterTitle">เพิ่มข้อมูลอุปกรณ์</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form action="" method="post">
-            <div class="form-group">
-                <label>รหัสอุปกรณ์</label>
-                <input type="text" class="form-control" name="txt_eq_serial">
-                <input type="hidden" name="eq_name_id" value="<?php echo $eq_name_id; ?>">
-                <input type="hidden" name="eq_name_name" value="<?php echo $eq_name_name; ?>">
-                <input type="hidden" name="eq_status" value="<?php echo $eq_status; ?>">
-            </div>
-            <div class="form-group">
-      <label for="exampleSelect1">ประเภทอุปกรณ์</label>
-      <select class="form-control" id="exampleSelect1" name="eq_type">
-        <?php 
-        $sql = "SELECT * FROM tbl_equipment_type";
-        $result = $conn->query($sql);
-        if ($result->num_rows > 0) {
-          while($row = mysqli_fetch_array($result)){
-            echo "<option value='".$row['eq_type_name']."'>";
-            echo $row["eq_type_name"];
-            echo "</option>";
-          }
-        }
-        ?>
-      </select>
-    </div>
-      </div>
-      <div class="modal-footer">
-      <input type="submit" class="btn btn-success" name="btn_add_eq" value="บันทึก"/>
-      </div>
-      </form>
-    </div>
-  </div>
 </div>
     <script>
       $(document).ready(function () {

@@ -1,32 +1,34 @@
 <?php
-session_start();
-include "php/connect.php";
+require_once("class/class.user.php");
+
+$regis = new User();
 
 if(isset($_POST["register"]))
 {
-  $mb_id = $_POST["txt_mb_id"];
-  $mb_fname = $_POST["txt_mb_fname"];
-  $mb_lname = $_POST["txt_mb_lname"];
-  $mb_pass = $_POST["txt_mb_pass"];
-  $mb_conpass = $_POST["txt_mb_conpass"];
+	
+  $mb_id = $_POST["txt_mb_id"]; $mb_fname = $_POST["txt_mb_fname"];
+  $mb_lname = $_POST["txt_mb_lname"]; $mb_pass = $_POST["txt_mb_pass"];
+  $mb_type = "it";
 
-  /*if($mb_id == ""){$alert = "Enter Member ID...";}
-  if($mb_fname == ""){ $alert = "Enter Firstname...";}
-  if($mb_lname == ""){ $alert = "Enter Lastname...";}
-  if($mb_pass == "") {$alert = "Enter Password...";}
-  if($mb_conpass == "") {$alert = "Enter Confirm Password...";}
-  if($mb_pass != $mb_conpass) {$alert = "Password Not Match...";}*/
-
-  $sql = "INSERT INTO tbl_member (mb_id,mb_fname,mb_lname,mb_pass)
-  VALUE('$mb_id','$mb_fname','$mb_lname','$mb_pass')";
-
-  if ($conn->query($sql) === TRUE) {
-    $alertRegister = "Register Success...";
-} else {
-    echo "Error: " . $sql . "<br>" . $conn->error;
-}
-
-$conn->close();
+  try
+  {
+	$stmt = $regis->runQuery("SELECT mb_id FROM tbl_member WHERE mb_id = :mb_id");
+	$stmt->execute(array(':mb_id'=>$mb_id));
+	$row=$stmt->fetch(PDO::FETCH_ASSOC);
+		
+	if($row['mb_id'] == $mb_id) {
+		echo "<script>alert('มีรหัสผู้ใช้นี้ในระบบแล้ว !!')</script>";
+	}
+	  else{
+		  if($regis->register($mb_id,$mb_fname,$mb_lname,$mb_pass,$mb_type)){
+			  $regis->redirect("sign-up.php?joined");
+		  }
+	  }
+  }
+  catch(PDOException $e)
+  {
+	  echo $e->getMessage();
+  }
 
 }
 ?>
@@ -40,63 +42,54 @@ $conn->close();
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>Document</title>
 	<link rel="stylesheet" href="css/cosmo.css">
-	<script src="https://code.jquery.com/jquery-3.3.1.min.js" type="text/javascript"></script>
-	<link rel="stylesheet" href="css/hero.css">
 	<link href="https://fonts.googleapis.com/css?family=Kanit" rel="stylesheet">
-	<script>
-		function checkAvailability() {
-			    $.ajax({
-				url: "check_availability.php",
-				data: 'username=' + $("#username").val(),
-				type: "POST",
-				success: function (data) {
-					$("#user-availability-status").html(data);
-				},
-				error: function () {}
-			});
-		}
-
-		function checkFname()
-		{
-			$("#error_fname").hide();
-			var fname = $("#txt_mb_fname").val();
-			if( fname.lenght < 6 )
-			{
-				alert("OK");
-			}
-		}
-	</script>
+	<script src="js/check_register.js"></script>
+	<style>
+     body{
+       background-color: #dcdcdc;
+        font-family: 'Kanit', sans-serif;
+     }
+    </style>
 </head>
-
 <body>
 
-	<div class="container col-md-6">
-		<form action="" method="post">
+	<div class="container col-md-5 mt-4">
+	<?php
+			if(isset($_GET['joined']))
+			{
+				 ?>
+                 <div class="alert alert-success">
+				     <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <center>ลงทะเบียนเสร็จสมบูรณ์ คลิก<a href='sign-in.php'> ที่นี่</a> เพื่อเข้าสู่ระบบ</center>
+                 </div>
+                 <?php
+			}
+			?>
+		<form action="" name="registerForm" method="post" onsubmit="return checkRegister()" >
 			<fieldset>
-				<legend>REGISTER</legend>
+				<legend><b>ลงทะเบียนสมาชิก</b></legend>
 				<div class="form-group">
-					<label>MEMBER ID</label>
-					<input name="username" type="text" id="username" class="form-control" onBlur="checkAvailability()">
-					<span id="user-availability-status"></span>
+					<label><b>รหัสประจำตัว</b></label>
+					<input name="txt_mb_id" type="text" id="txt_mb_id" class="form-control">
 				</div>
 				<div class="form-group">
-					<label>FIRSTNAME</label>
-					<input type="text" class="form-control" id="txt_mb_fname" name="txt_mb_fname"onBlur="checkFname()"><span id="error_fname">Error</span>
+					<label><b>ชื่อ</b></label>
+					<input type="text" class="form-control" id="txt_mb_fname" name="txt_mb_fname">
 				</div>
 				<div class="form-group">
-					<label>LASTNAME</label>
+					<label><b>นามสกุล</b></label>
 					<input type="text" class="form-control" name="txt_mb_lname">
 				</div>
 				<div class="form-group">
-					<label>PASSWORD</label>
-					<input type="text" class="form-control" name="txt_mb_pass">
+					<label><b>รหัสผ่าน</b></label>
+					<input type="password" class="form-control" name="txt_mb_pass">
 				</div>
 				<div class="form-group">
-					<label>CONFIRMPASSWORD</label>
-					<input type="text" class="form-control" name="txt_mb_conpass">
+					<label><b>ยืนยันรหัสผ่าน</b></label>
+					<input type="password" class="form-control" name="txt_mb_cpass">
 				</div>
-				<button type="submit" name="register" class="btn btn-success col-md-3">REGISTER</button>
-				<button type="reset" class="btn btn-secondary col-md-3">CANCEL</button>
+				<button type="submit" name="register" class="btn btn-success col-md-4">ลงทะเบียน</button>
+				<button type="reset" class="btn btn-secondary col-md-4">ยกเลิก</button>
 			</fieldset>
 		</form>
 	</div>

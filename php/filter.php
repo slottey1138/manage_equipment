@@ -11,7 +11,7 @@
       $result = mysqli_query($connect, $query);  
       $output .= '  
            <table class="table table-hover">  
-           <tr class="table table-success">  
+           <tr class="table table-success"> 
            <th class="td-1">ชื่อเคส</th>
            <th class="td-2">วันที่</th>
            <th class="td-3">ชื่ออุปกรณ์ที่คืน</th>

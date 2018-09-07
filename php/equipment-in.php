@@ -37,7 +37,7 @@ $eq_status = "in";
       <a href="equipment-in.php" class="btn btn-info col-md-2">อยู่ในสต๊อค</a>
       <a href="equipment-out.php" class="btn btn-info col-md-2">ใช้งานอยู่</a>
       <a href="equipment-broken.php" class="btn btn-danger col-md-2">เสีย</a>
-      <a href="add_equipment.php" class="btn btn-primary float-right"><i class="fa fa-plus"></i> เพิ่มอุปกรณ์</a>
+      <a href="add_equipment.php" class="btn btn-primary col-md-2 float-right"><i class="fa fa-plus"></i> เพิ่มอุปกรณ์</a>
       </div>
       </div>
 

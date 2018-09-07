@@ -20,19 +20,19 @@ class USER
 		return $stmt;
 	}
 	
-	public function register($mb_id,$mb_fname,$mb_lname,$mb_pass)
+	public function register($mb_id,$mb_fname,$mb_lname,$mb_pass,$mb_type)
 	{
 		try
 		{
-			$new_password = password_hash($mb_pass, PASSWORD_DEFAULT);
 			
-			$stmt = $this->conn->prepare("INSERT INTO tbl_member(mb_id,mb_fname,mb_lname,mb_pass) 
-		                                               VALUES(:mb_id, :mb_fname,:mb_lname, :mb_pass)");
+			$stmt = $this->conn->prepare("INSERT INTO tbl_member(mb_id,mb_fname,mb_lname,mb_pass,mb_type) 
+		                                               VALUES(:mb_id, :mb_fname,:mb_lname, :mb_pass, :mb_type)");
 				
 			$stmt->bindparam(":mb_id", $mb_id);
 			$stmt->bindparam(":mb_fname", $mb_fname);
 			$stmt->bindparam(":mb_lname", $mb_lname);
-			$stmt->bindparam(":mb_pass", $new_password);										  
+			$stmt->bindparam(":mb_pass", $mb_pass);		
+			$stmt->bindparam(":mb_type", $mb_type);										  
 				
 			$stmt->execute();	
 			

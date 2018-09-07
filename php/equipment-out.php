@@ -37,7 +37,7 @@ $eq_status = "in";
       <a href="equipment-in.php" class="btn btn-info col-md-2">อยู่ในสต๊อค</a>
       <a href="equipment-out.php" class="btn btn-info col-md-2">ใช้งานอยู่</a>
       <a href="equipment-broken.php" class="btn btn-danger col-md-2">เสีย</a>
-      <a href="add_equipment.php" class="btn btn-primary float-right"><i class="fa fa-plus"></i> เพิ่มอุปกรณ์</a>
+      <a href="add_equipment.php" class="btn btn-primary col-md-2 float-right"><i class="fa fa-plus"></i> เพิ่มอุปกรณ์</a>
       </div>
       </div>
 
@@ -92,48 +92,6 @@ $eq_status = "in";
       </table>
     </div>
 
-<div class="modal" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalCenterTitle">เพิ่มข้อมูลอุปกรณ์</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form action="" method="post">
-            <div class="form-group">
-                <label>รหัสอุปกรณ์</label>
-                <input type="text" class="form-control" name="txt_eq_serial">
-                <input type="hidden" name="eq_name_id" value="<?php echo $eq_name_id; ?>">
-                <input type="hidden" name="eq_name_name" value="<?php echo $eq_name_name; ?>">
-                <input type="hidden" name="eq_status" value="<?php echo $eq_status; ?>">
-            </div>
-            <div class="form-group">
-      <label for="exampleSelect1">ประเภทอุปกรณ์</label>
-      <select class="form-control" id="exampleSelect1" name="eq_type">
-        <?php 
-        $sql = "SELECT * FROM tbl_equipment_type";
-        $result = $conn->query($sql);
-        if ($result->num_rows > 0) {
-          while($row = mysqli_fetch_array($result)){
-            echo "<option value='".$row['eq_type_name']."'>";
-            echo $row["eq_type_name"];
-            echo "</option>";
-          }
-        }
-        ?>
-      </select>
-    </div>
-      </div>
-      <div class="modal-footer">
-      <input type="submit" class="btn btn-success" name="btn_add_eq" value="บันทึก"/>
-      </div>
-      </form>
-    </div>
-  </div>
-</div>
     <script>
       $(document).ready(function () {
         $("#myInput").on("keyup", function () {

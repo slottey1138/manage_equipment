@@ -46,7 +46,7 @@ if(isset($_POST["login"]))
     if(isset($error)){
       echo "<div class='alert alert-dismissible alert-danger'>
       <button type='button' class='close' data-dismiss='alert'>&times;</button>
-      <strong>Oh snap!</strong>
+      <strong>ข้อมูลไม่ถูกต้อง !!</strong>
     </div>";
     }
     ?>
@@ -64,7 +64,7 @@ if(isset($_POST["login"]))
     </div>
     <button type="submit" name="login" class="btn btn-success col-md-3">เข้าสู่ระบบ</button>
     <button type="reset" class="btn btn-secondary col-md-3">ยกเลิก</button>
-    <a href="register.php" class="btn btn-info col-md-3" style="float:right" >ลงทะเบียน</a>
+    <a href="sign-up.php" class="btn btn-info col-md-3" style="float:right" >ลงทะเบียน</a>
   </fieldset>
 </form>
     </div>

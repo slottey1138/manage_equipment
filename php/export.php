@@ -19,7 +19,8 @@ require_once("connect.php");
   <body>
   <?php require_once("navbar.php") ?>
     <div class="container-fluid mt-2">
-   <legend>ข้อมูลอุปกรณ์ทั้งหมด</legend>
+   <legend class="float-left">ข้อมูลอุปกรณ์ทั้งหมด</legend>
+   <button id='DLtoExcel' class="btn btn-success col-md-2 float-right mb-3">ส่งออกข้อมูล <i class="fa fa-arrow-right"></i></button>
     <table class="table " id="tableData">
     <thead>
       <tr class="table table-dark">
@@ -28,7 +29,7 @@ require_once("connect.php");
         <th class="td2" style=" text-align: center;">In use</th>
         <th class="td3" style=" text-align: center;">Broken</th>
         <th class="td4" style=" text-align: center;">Spare</th>
-        <th class="td5" style=" text-align: center;">Expiry Date</th>
+        <th class="td5" style=" text-align: center;">Warranty</th>
       </tr>
     </thead>
     <?php
@@ -68,7 +69,6 @@ require_once("connect.php");
             <?php }
     $conn->close();?>
   </table>
-       <center> <button id='DLtoExcel' class="btn btn-success col-md-3 btn-lg">ส่งออกข้อมูล</button></center>
         </div>
         </br>
         <script type="text/javascript">
