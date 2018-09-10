@@ -58,15 +58,15 @@ class Equipment
         }
     }
 
-    public function updateEq($eq_id,$eq_serial,$eq_status)
+    public function updateEq($eq_id,$eq_status)
     {
         try
         {
            
-            $stmt = $this->conn->prepare("UPDATE tbl_equipment SET eq_serial_number =:eq_serial_number, eq_status =:eq_status
+            $stmt = $this->conn->prepare("UPDATE tbl_equipment SET  eq_status =:eq_status
             WHERE eq_id = :eq_id ");
             $stmt->execute(array(
-             ':eq_serial_number' => $eq_serial, ':eq_status' => $eq_status, ':eq_id' => $eq_id
+             ':eq_status' => $eq_status, ':eq_id' => $eq_id
             ));
             return $stmt;
         }

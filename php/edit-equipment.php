@@ -9,12 +9,11 @@ $eq_type = $_GET["eq_type"];
 
 if(isset($_POST["btn-edit"]))
 {
-  $eq_id = $_POST["eq_id"]; $eq_serial = $_POST["eq_serial_number"]; 
-  $eq_status = $_POST["eq_status"];
+  $eq_id = $_POST["eq_id"]; $eq_status = $_POST["eq_status"];
 
   try
   {
-    if($edit->updateEq($eq_id,$eq_serial,$eq_status))
+    if($edit->updateEq($eq_id,$eq_status))
     {
         if($eq_status == "out" ){
           $edit->redirect("equipment-out.php");
@@ -25,10 +24,6 @@ if(isset($_POST["btn-edit"]))
         else{
           $edit->redirect("equipment-broken.php");
         }
-    }
-    else
-    {
-      echo "<script>alert('OK')</script>";
     }
   }
   catch(PDOException $e)
@@ -76,7 +71,6 @@ if(isset($_POST["btn-edit"]))
       ?>
           <form action="" method="post">
           <input type="hidden" name="eq_id" value="<?php echo $eq_id; ?>"/>
-          <input type="hidden" name="eq_name_name" value="<?php echo $eq_name_name; ?>">
           <tbody>
             <tr>
               <td class="td-2">
@@ -85,13 +79,13 @@ if(isset($_POST["btn-edit"]))
               <td class="td-3">
                 <input type="text" class="form-control" name="eq_serial_number"  disabled="" value="<?php echo $row["eq_serial_number"]; ?>"/> </td>
               <td class="td-4">
-               <input type="text" class="form-control" name="eq_serial_number"  disabled="" value="<?php echo $row["eq_type"]; ?>"/> </td>
+               <input type="text" class="form-control" name="eq_type"  disabled="" value="<?php echo $row["eq_type"]; ?>"/> </td>
               </td>
               <td class="td-5">
                 <select class="form-control" id="exampleSelect1" name="eq_status">
-                  <option <?php if ($row['eq_status'] == 'out' ) echo 'selected' ; ?> value="out" >In use</option>
-                  <option  <?php if ($row['eq_status'] == 'in' ) echo 'selected' ; ?> value="in" >In Stock</option>
-                  <option  <?php if ($row['eq_status'] == 'broken' ) echo 'selected' ; ?> value="broken" >Broken</option>
+                  <option  value="broken" >Broken</option>
+                  <option  value="out" >In use</option>
+                  <option  value="in" >In Stock</option>
                 </select>
               </td>
               <td class="td-6">
