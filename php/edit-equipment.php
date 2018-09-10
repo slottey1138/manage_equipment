@@ -1,44 +1,40 @@
 <?php
 require_once("session.php");
-require_once("connect.php");
+require_once("../class/class.equipment.php");
+
+$edit = new Equipment();
 
 $eq_id = $_GET["eq_id"];
+$eq_type = $_GET["eq_type"];
 
 if(isset($_POST["btn-edit"]))
 {
-  $eq_id = $_POST["eq_id"];
-  $eq_name = $_POST["eq_name"];
-  $eq_serial_number = $_POST["eq_serial_number"];
-  $eq_type = $_POST["eq_type"];
+  $eq_id = $_POST["eq_id"]; $eq_serial = $_POST["eq_serial_number"]; 
   $eq_status = $_POST["eq_status"];
-  $eq_name_name = $_POST["eq_name_name"];
 
-     $update_eq = "UPDATE tbl_equipment SET  eq_serial_number = '$eq_serial_number',
-     eq_type = '$eq_type',
-     eq_status = '$eq_status'
-     WHERE eq_id = '$eq_id'";
-     if($conn->query($update_eq) === true )
-     {
-       if($eq_status == "broken")
-       {
-        echo "<script>alert('แก้ไขข้อมูลอุปกรณ์เรียบร้อยแล้ว')</script>";
-        echo "<script>location='equipment-broken.php'</script>";
-       }
-       else if($eq_status == "in")
-       {
-        echo "<script>alert('แก้ไขข้อมูลอุปกรณ์เรียบร้อยแล้ว')</script>";
-        echo "<script>location='equipment-in.php'</script>";
-       }
-       else {
-        echo "<script>alert('แก้ไขข้อมูลอุปกรณ์เรียบร้อยแล้ว')</script>";
-        echo "<script>location='equipment-out.php'</script>";
-       }
-     }
-     else
-     {
-       echo "<script>alert(''Error)</script>";
-       echo "<script>location='view-detail'</script>";
-     }
+  try
+  {
+    if($edit->updateEq($eq_id,$eq_serial,$eq_status))
+    {
+        if($eq_status == "out" ){
+          $edit->redirect("equipment-out.php");
+        }
+        else if($eq_status == "in"){
+          $edit->redirect("equipment-in.php");
+        }
+        else{
+          $edit->redirect("equipment-broken.php");
+        }
+    }
+    else
+    {
+      echo "<script>alert('OK')</script>";
+    }
+  }
+  catch(PDOException $e)
+  {
+    echo $e->getMessage();
+  }
   }
 ?>
   <!DOCTYPE html>
@@ -48,7 +44,7 @@ if(isset($_POST["btn-edit"]))
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>แก้ไขข้อมูลอุปกรณ์</title>
     <style>
       .td-1 { width: 8%;}
       .td-2 {width: 20%;}
@@ -65,7 +61,7 @@ if(isset($_POST["btn-edit"]))
       <table class="table table-hover">
         <thead>
           <tr class="table-primary">
-            <th scope="col">ชื่อ</th>
+            <th scope="col">ชื่ออุปกรณ์</th>
             <th scope="col">รหัสอุปกรณ์</th>
             <th scope="col">ประเภทอุปกรณ์</th>
             <th scope="col">สถานะ</th>
@@ -73,11 +69,10 @@ if(isset($_POST["btn-edit"]))
           </tr>
         </thead>
         <?php
-   $sql = "SELECT * FROM tbl_equipment WHERE eq_id = '$eq_id' ";
-  $result = $conn->query($sql);
+       $select_eq = $edit->runQuery("SELECT * FROM tbl_equipment WHERE eq_id = :eq_id ");
+       $select_eq->execute(array( ':eq_id' => $eq_id ));
 
-    if ($result->num_rows > 0) {
-      $row = $result->fetch_assoc();
+       $row = $select_eq->fetch(PDO::FETCH_ASSOC);
       ?>
           <form action="" method="post">
           <input type="hidden" name="eq_id" value="<?php echo $eq_id; ?>"/>
@@ -85,29 +80,18 @@ if(isset($_POST["btn-edit"]))
           <tbody>
             <tr>
               <td class="td-2">
-              <input class="form-control" id="disabledInput" name="eq_name" value="<?php echo $row["eq_name"]; ?>" type="text">
+              <input class="form-control" id="disabledInput" name="eq_name"  disabled="" value="<?php echo $row["eq_name"]; ?>" type="text">
               </td>
               <td class="td-3">
-                <input type="text" class="form-control" name="eq_serial_number" value="<?php echo $row["eq_serial_number"]; ?>"/> </td>
+                <input type="text" class="form-control" name="eq_serial_number"  disabled="" value="<?php echo $row["eq_serial_number"]; ?>"/> </td>
               <td class="td-4">
-                <select class="form-control" id="exampleSelect1" name="eq_type">
-                  <?php
-                   $sql = "SELECT * FROM tbl_equipment_type";
-                   $result = $conn->query($sql);
-                   if ($result->num_rows > 0){
-                   while($row = $result->fetch_assoc()){
-                   echo "<option value='".$row["eq_type_name"]."'>";
-                   echo $row["eq_type_name"];
-                   echo "</option>";
-                   }
-                ?>
-                </select>
+               <input type="text" class="form-control" name="eq_serial_number"  disabled="" value="<?php echo $row["eq_type"]; ?>"/> </td>
               </td>
               <td class="td-5">
                 <select class="form-control" id="exampleSelect1" name="eq_status">
-                  <option value="out">In use</option>
-                  <option value="in">In Stock</option>
-                  <option value="broken">Broken</option>
+                  <option <?php if ($row['eq_status'] == 'out' ) echo 'selected' ; ?> value="out" >In use</option>
+                  <option  <?php if ($row['eq_status'] == 'in' ) echo 'selected' ; ?> value="in" >In Stock</option>
+                  <option  <?php if ($row['eq_status'] == 'broken' ) echo 'selected' ; ?> value="broken" >Broken</option>
                 </select>
               </td>
               <td class="td-6">
@@ -117,8 +101,8 @@ if(isset($_POST["btn-edit"]))
             </tr>
           </tbody>
           </form>
-          <?php  }} else {echo "ไม่มีข้อมูลอุปกรณ์";}?>
       </table>
     </div>
+   
   </body>
   </html>

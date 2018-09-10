@@ -8,6 +8,7 @@ if(isset($_POST["add_name"]))
 {
     $eq_name_id = $_POST["eq_name_id"]; $eq_name_name = $_POST["eq_name_name"];
     $eq_name_type = $_POST["eq_name_type"]; $eq_name_expiry = $_POST["eq_name_expiry"];
+    $eq_name_status = "show";
 
     $check_name = $mng->runQuery("SELECT eq_name_id,eq_name_name FROM tbl_equipment_name WHERE eq_name_id = :eq_name_id OR eq_name_name = :eq_name_name ");
     $check_name->execute(array( ':eq_name_id' => $eq_name_id, ':eq_name_name' => $eq_name_name ));
@@ -28,7 +29,7 @@ if(isset($_POST["add_name"]))
     }
     else 
     {
-       if($mng->addName($eq_name_id,$eq_name_name,$eq_name_type,$eq_name_expiry))
+       if($mng->addName($eq_name_id,$eq_name_name,$eq_name_type,$eq_name_expiry,$eq_name_status))
        {
            $mng->redirect('manage-data.php?success_name');
        }
@@ -78,9 +79,9 @@ if(isset($_POST['addType']))
   <title>ข้อมูลอุปกรณ์</title>
   <style>
     .t1 {width: 10%;}
-    .t2 { width: 30%;}
-    .t3 { width: 20%;}
-    .t4 {width: 35%; } .t5{width: 20%;}
+    .t2 { width: 40%;}
+    .t3 { width: 30%;}
+    .t4 {width: 20%; }
   </style>
 </head>
 
@@ -120,6 +121,7 @@ if(isset($_POST['addType']))
             <tr class="table-active">
               <th class="t1">รหัส</th>
               <th class="t2">ชื่ออุปกรณ์</th>
+              <th class="t4">สถานะ</th>
               <th class="t3"></th>
             </tr>
           </thead>
@@ -137,7 +139,17 @@ if(isset($_POST['addType']))
                   <?php echo $row["eq_name_name"]; ?>
                 </td>
                 <td>
-                  <a href="edit-name.php?eq_name_id=<?php echo $row["eq_name_id"];?>" class="btn btn-warning btn-sm col-md-5">
+                  <?php 
+                  if($row["eq_name_status"] == "show" ){
+                    echo "<a href='' class='btn btn-success btn-sm btn-block disabled'>SHOW</a>";
+                  }
+                  if($row["eq_name_status"] == "hide"){
+                    echo "<a href='' class='btn btn-info btn-sm btn-block disabled'>HIDE</a>";
+                  }
+                  ?>
+                </td>
+                <td>
+                  <a href="edit-name.php?eq_name_id=<?php echo $row["eq_name_id"];?>&eq_name_type=<?php echo $row["eq_name_type"];?>" class="btn btn-warning btn-sm col-md-5">
                     <i class="fas fa-edit"></i>
                   </a>
                     <a href="JavaScript:if(confirm('Confirm Delete?')==true){window.location='../scripts/delete-data.php?delete-eq-name&eq_name_id=<?php echo $row["eq_name_id"];?>
@@ -225,12 +237,12 @@ if(isset($_POST['addType']))
             <form action="" method="post">
               <div class="group-control">
                 <label>รหัสอุปกรณ์</label>
-                <input type="text" name="eq_name_id" class="form-control" />
+                <input type="text" name="eq_name_id" class="form-control" required/>
               </div>
               <br>
               <div class="group-control">
                 <label>ชื่ออุปกรณ์</label>
-                <input type="text" name="eq_name_name" class="form-control" />
+                <input type="text" name="eq_name_name" class="form-control" required/>
               </div><br>
               <div class="form-group">
                         <label for="exampleSelect1">ประเภทอุปกรณ์</label>

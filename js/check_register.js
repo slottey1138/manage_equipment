@@ -49,3 +49,29 @@ function checkRegister() {
         return true;
     }
 }
+
+function checkEq(){
+    var eq_serial = document.forms["add_eq"]["eq_serial_number"].value;
+    var eq_name = document.forms["add_eq"]["eq_name"].value;
+    var eq_type = document.forms["add_eq"]["eq_type"].value;
+
+    if(eq_serial == ""){
+        alert("ใส่รหัสอุปกรณ์ !!");
+        return false;
+    }
+    else if(eq_serial.length < 5){
+        alert("รหัสอุปกรณ์สั้นกินไป !!");
+        return false;
+    }
+    else if(eq_name == ""){
+        alert("เลือกชื่ออุปกรณ์ !!");
+        return false;
+    }
+    else if(eq_type == ""){
+        alert("เลือกชื่อประเภทอุปกรณ์ !!");
+        return false;
+    }
+    else{
+        return true;
+    }
+}

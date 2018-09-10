@@ -38,6 +38,7 @@ if(isset($_POST["add_equipment"]))
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>เพิ่มอุปกรณ์</title>
+    <script src="../js/check_register.js"></script>
 </head>
 <body>
     <?php require_once("navbar.php"); ?>
@@ -69,15 +70,15 @@ if(isset($_POST["add_equipment"]))
             ?>
              <div class="container col-md-12">
              <legend>เพิ่มอุปกรณ์</legend>
-               <form action="" method="post">
+               <form action="" method="post" name="add_eq" onsubmit="return checkEq()">
                      <div class="form-group">
                           <label>รหัสอุปกรณ์</label>
-                          <input type="text" class="form-control" name="eq_serial_number">
+                          <input type="text" class="form-control" name="eq_serial_number" >
                      </div>
                      <div class="form-group">
                         <label for="exampleSelect1">ชื่ออุปกรณ์</label>
                         <select class="form-control" name="eq_name">
-                            <?php
+                    <?php
                     $sql = "SELECT * FROM tbl_equipment_name";
                     $result = mysqli_query($conn,$sql);
                     echo "<option></option>";
@@ -90,7 +91,7 @@ if(isset($_POST["add_equipment"]))
                     <div class="form-group">
                         <label for="exampleSelect1">ประเภทอุปกรณ์</label>
                         <select class="form-control" name="eq_type">
-                            <?php
+                    <?php
                     $sql = "SELECT * FROM tbl_equipment_type";
                     $result = mysqli_query($conn,$sql);
                     echo "<option></option>";

@@ -181,7 +181,7 @@ if(isset($_POST['addEquipment']))
                         <label for="exampleSelect1">ชื่ออุปกรณ์</label>
                         <select class="form-control" name="eq_name">
                     <?php
-                    $stmt = $user->runQuery("SELECT * FROM tbl_equipment_name");
+                    $stmt = $user->runQuery("SELECT * FROM tbl_equipment_name WHERE eq_name_status = '"."show"."' ");
                     $stmt->execute(array());
                    
                     while($eq = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -244,7 +244,7 @@ if(isset($_POST['addEquipment']))
                         <label for="exampleSelect1">ชื่ออุปกรณ์</label>
                         <select class="form-control" name="eq_name">
                     <?php
-                    $stmt = $user->runQuery("SELECT * FROM tbl_equipment_name");
+                    $stmt = $user->runQuery("SELECT * FROM tbl_equipment_name WHERE eq_name_status = '"."show"."'");
                     $stmt->execute(array());
                    
                     while($eq = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -308,7 +308,7 @@ if(isset($_POST['addEquipment']))
                         <label for="exampleSelect1">ชื่ออุปกรณ์</label>
                         <select class="form-control" name="get_eq_name">
                     <?php
-                    $stmt = $user->runQuery("SELECT * FROM tbl_equipment_name");
+                    $stmt = $user->runQuery("SELECT * FROM tbl_equipment_name WHERE eq_name_status = '"."show"."'");
                     $stmt->execute(array());
                    
                     while($eq = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -326,7 +326,7 @@ if(isset($_POST['addEquipment']))
                         <label for="exampleSelect1">ชื่ออุปกรณ์</label>
                         <select class="form-control" name="add_eq_name">
                     <?php
-                    $stmt = $user->runQuery("SELECT * FROM tbl_equipment_name");
+                    $stmt = $user->runQuery("SELECT * FROM tbl_equipment_name WHERE eq_name_status = '"."show"."'");
                     $stmt->execute(array());
                    
                     while($eq = $stmt->fetch(PDO::FETCH_ASSOC)) {

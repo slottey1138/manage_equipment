@@ -82,7 +82,7 @@ $eq_status = "in";
       ?>
               </td>
               <td class="td-6">
-                <a href="edit-equipment.php?eq_id=<?php echo $row["eq_id"]; ?>" class="btn btn-warning btn-sm col-md-5"><i class="fas fa-edit"></i> แก้ไข</a>
+                <a href="edit-equipment.php?eq_id=<?php echo $row["eq_id"]; ?>&eq_type=<?php echo $row["eq_type"]?>" class="btn btn-warning btn-sm col-md-5"><i class="fas fa-edit"></i> แก้ไข</a>
                 <a href="JavaScript:if(confirm('Confirm Delete?')==true){window.location='../scripts/delete-data.php?delete-eq&eq_id=<?php echo $row["eq_id"];?>';}" 
                 class="btn btn-danger btn-sm col-md-5"><i class="fas fa-trash-alt"></i> ลบ</a>
               </td>

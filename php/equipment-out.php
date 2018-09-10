@@ -1,8 +1,25 @@
 <?php
 require_once("session.php");
 require_once("connect.php");
+require_once("../class/class.equipment.php");
 
-$eq_status = "in";
+$eqt = new Equipment();
+
+if(isset($_POST["btn-broken"]))
+{
+  try
+  {
+  $eq_id = $_POST["eq_id"]; $eq_status = "broken";
+
+     if($eqt->broken($eq_status,$eq_id)){
+      $eqt->redirect("equipment-broken.php");
+     }
+  }
+  catch(PDOException $e)
+  {
+    echo $e->getMessage();
+  }
+}
 
 ?>
   <!DOCTYPE html>
@@ -12,15 +29,15 @@ $eq_status = "in";
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>อุปกรณ์ที่อยู่ระหว่างใช้งาน</title>
+    <title>จัดการอุปกรณ์</title>
 
     <style>
-      .td-1 { width: 8%; }
+      .td-1 { width: 8%;}
       .td-2 { width: 20%;}
       .td-3 {width: 25%;}
       .td-4 { width: 15%;}
-      .td-5 {width: 15%;}
-      .td-6 { width: 17%;}
+      .td-5 {width: 22%;}
+      .td-6 { width: 10%;}
     </style>
   </head>
   <body>
@@ -52,46 +69,45 @@ $eq_status = "in";
             <th scope="col">แก้ไข</th>
           </tr>
         </thead>
-       <?php
-   $sql = "SELECT * FROM tbl_equipment WHERE eq_status = '"."out"."' AND eq_status != '"."broken"."'";
-    $result = $conn->query($sql);
-    if ($result->num_rows > 0) {
+    <?php
+    $stmt = $eqt->runQuery("SELECT * FROM tbl_equipment WHERE eq_status = '"."out"."' AND eq_status != '"."broken"."'");
+    $stmt->execute();
       $i = 1;
-      while($row = $result->fetch_assoc()) { 
+      while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         ?>
+         <form action="" method="post"onSubmit="if(!confirm('ต้องการเปลี่ยนแปลงข้อมูลอุปกรณ์นี้ ?')){return false;}">
+         <input type="hidden" name="eq_id" value="<?php echo $row["eq_id"] ?>" >
           <tbody id="myTable">
             <tr>
-              <td class="td-1"><?php echo $i; ?></td>
+              <td class="td-1">
+              <?php echo $i; ?>
+              </td>
               <td class="td-2"><?php echo $row["eq_name"]; ?></td>
               <td class="td-3"><?php echo $row["eq_serial_number"]; ?></td>
               <td class="td-4"><?php echo $row["eq_type"]; ?></td>
               <td class="td-5">
-                <?php 
-      if($row["eq_status"] == "in")
-      {
-        echo "<button type='button' class='btn btn-info btn-sm col-md-6 disabled'>In-stock</button>";
-      }
-      if($row["eq_status"] == "out") 
-      {
-        echo "<button type='button' class='btn btn-success btn-sm col-md-6 disabled'>In-use</button>";
-      }
-      if($row["eq_status"] == "broken")
-      {
-        echo "<button type='button' class='btn btn-danger btn-sm col-md-6 disabled'>Broken</button>";
-      }
-      ?>
+              <?php 
+               if($row["eq_status"] == "in"){
+                echo "<button type='button' class='btn btn-info btn-sm col-md-6 disabled btn-block'>In-stock</button>";
+               }
+               if($row["eq_status"] == "out"){
+                echo "<button type='button' class='btn btn-success btn-sm col-md-6 disabled btn-block'>In-use</button>";
+               }
+               if($row["eq_status"] == "broken"){
+                echo "<button type='button' class='btn btn-danger btn-sm col-md-6 disabled btn-block'>Broken</button>";
+               }
+               ?>
               </td>
               <td class="td-6">
-                <a href="edit-equipment.php?eq_id=<?php echo $row["eq_id"]; ?>" 
-                class="btn btn-warning btn-sm btn-block">
-                  <i class="fas fa-edit"></i> แก้ไข</a>
+                  <button typre="submit" class="btn btn-danger btn-sm col-md-7" name="btn-broken"><i class="fas fa-trash"></i> เสีย</button>
               </td>
             </tr>
           </tbody>
-          <?php  $i++;}} else {echo "ไม่มีข้อมูลอุปกรณ์";}?>
+          </form>
+          <?php  $i++;}?>
       </table>
     </div>
-
+</div>
     <script>
       $(document).ready(function () {
         $("#myInput").on("keyup", function () {
