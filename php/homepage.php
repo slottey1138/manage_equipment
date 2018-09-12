@@ -15,7 +15,7 @@ $srv = new Service();
 
 if(isset($_POST['getEquipment']))
 {
-    $eq_name = $_POST["eq_name"]; $eq_serial_number = $_POST["eq_serial_number"];
+    $eq_name = $_POST["eq_name"]; $eq_serial_number = trim($_POST["eq_serial_number"]);
     $eq_status = "in"; $eq_case_name = "get"; $case_check = "out";
     $case_sup = $_POST["sup_name"]; $case_date = date('Y-m-d H:i:s');
     
@@ -52,7 +52,7 @@ if(isset($_POST['getEquipment']))
 
 if(isset($_POST['addEquipment']))
 {
-    $eq_name = $_POST["eq_name"]; $eq_serial_number = $_POST["eq_serial_number"];
+    $eq_name = $_POST["eq_name"]; $eq_serial_number = trim($_POST["eq_serial_number"]);
     $eq_status = "out"; $eq_case_name = "add"; $case_check = "in";
     $case_sup = $_POST["sup_name"]; $case_date = date('Y-m-d H:i:s');
     
@@ -88,15 +88,17 @@ if(isset($_POST['addEquipment']))
  }
     if(isset($_POST['changeEquipment']))
     {
-        $get_eq_name = $_POST["get_eq_name"]; $get_eq_serial_number = $_POST["get_eq_serial_number"];
-        $get_eq_status = "in"; $add_eq_name = $_POST["add_eq_name"]; $add_eq_serial_number = $_POST["add_eq_serial_number"];
-        $add_eq_status = "out"; $supervisor = $_POST["sup_name"]; $date = date('Y-m-d H:i:s'); $eq_case_name = "change";
+        $get_eq_serial_number = trim($_POST["get_eq_serial_number"]); $eq_case_name = "change";
+        $get_eq_status = "in"; $add_eq_serial_number = trim($_POST["add_eq_serial_number"]);
+        $add_eq_status = "out"; $supervisor = $_POST["sup_name"]; $date = date('Y-m-d H:i:s');
+        $get_eq_name = $_POST["get_eq_name"]; $result_get_eq_name = explode('|', $get_eq_name);
+        $add_eq_name = $_POST["add_eq_name"]; $result_add_eq_name = explode('|', $add_eq_name);
 
         $che_get = $srv->runQuery("SELECT eq_name,eq_serial_number,eq_status FROM tbl_equipment WHERE eq_name =:get_eq_name
         AND eq_serial_number =:get_eq_serial_number AND eq_status =:get_eq_status");
 
         $che_get->execute(array(
-            ':get_eq_name' => $get_eq_name, ':get_eq_serial_number' => $get_eq_serial_number, ':get_eq_status' => $add_eq_status
+            ':get_eq_name' => $result_get_eq_name[0], ':get_eq_serial_number' => $get_eq_serial_number, ':get_eq_status' => $add_eq_status
         ));
 
         if($che_get->rowCount() == 1)
@@ -105,18 +107,23 @@ if(isset($_POST['addEquipment']))
             AND eq_serial_number =:add_eq_serial_number AND eq_status =:add_eq_status");
 
             $che_add->execute(array(
-            ':add_eq_name' => $add_eq_name, ':add_eq_serial_number' => $add_eq_serial_number, ':add_eq_status' => $get_eq_status
+            ':add_eq_name' => $result_add_eq_name[0], ':add_eq_serial_number' => $add_eq_serial_number, ':add_eq_status' => $get_eq_status
              ));  
 
              if($che_add->rowCount() == 1)
              {
-                if($srv->changeCase($get_eq_name,$get_eq_serial_number, $get_eq_status,$add_eq_name,$add_eq_serial_number,$add_eq_status,$supervisor,$date, $eq_case_name))
-                {
-                    $srv->redirect('homepage.php?success_change');
-                }
-                else{
-                    $error_change[] = "บันทึกข้อมูลไม่สำเร็จ...";
-                }
+                 if($result_get_eq_name[1] != $result_add_eq_name[1] ){
+                    $error_change[] = "ข้อมูลอุปกรณ์เปลี่ยนต้องเป็นชนิดเดียวกัน..";
+                 }
+                 else{
+                    if($srv->changeCase($get_eq_name,$get_eq_serial_number, $get_eq_status,$add_eq_name,$add_eq_serial_number,$add_eq_status,$supervisor,$date, $eq_case_name))
+                    {
+                        $srv->redirect('homepage.php?success_change');
+                    }
+                    else{
+                        $error_change[] = "บันทึกข้อมูลไม่สำเร็จ...";
+                    }
+                 }
              }
              else 
              {
@@ -312,14 +319,14 @@ if(isset($_POST['addEquipment']))
                     $stmt->execute(array());
                    
                     while($eq = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                        echo "<option value='".$eq['eq_name_name']."' >".$eq['eq_name_name']."</option>";
-                    }
-                    ?>
+                        ?>
+                         <option value="<?php echo $eq["eq_name_name"];?>|<?php echo $eq["eq_name_type"] ?>"><?php echo $eq["eq_name_name"];?></option>
+                        <?php }?>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>รหัสอุปกรณ์</label>
-                        <input type="text" class="form-control" name="get_eq_serial_number">
+                        <input type="text" class="form-control" name="get_eq_serial_number" required >
                     </div>
                     <legend>เป็นอุปกรณ์</legend>
                     <div class="form-group">
@@ -329,15 +336,15 @@ if(isset($_POST['addEquipment']))
                     $stmt = $user->runQuery("SELECT * FROM tbl_equipment_name WHERE eq_name_status = '"."show"."'");
                     $stmt->execute(array());
                    
-                    while($eq = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                        echo "<option value='".$eq['eq_name_name']."' >".$eq['eq_name_name']."</option>";
-                    }
-                    ?>
+                    while($eq = $stmt->fetch(PDO::FETCH_ASSOC)) {?>
+                        <option value="<?php echo $eq["eq_name_name"];?>|<?php echo $eq["eq_name_type"] ?>"><?php echo $eq["eq_name_name"] ?></option>
+                         <?php }?>
                         </select>
+                       
                     </div>
                     <div class="form-group">
                         <label>รหัสอุปกรณ์</label>
-                        <input type="text" class="form-control" name="add_eq_serial_number">
+                        <input type="text" class="form-control" name="add_eq_serial_number" required >
                     </div>
                     <div class="form-group">
                         <label for="exampleSelect1">Supervisor</label>

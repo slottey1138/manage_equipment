@@ -57,11 +57,12 @@ if(isset($_POST["edit-name"]))
     }
     ?>
        <form action="" method="post">
+       <input type="hidden" class="form-control" name="txt_eq_id" value="<?php echo $row["eq_name_id"]; ?>" >
        <div class="container">
           <legend>แก้ไขรายชื่ออุปกรณ์</legend>
            <div class="form-group">
               <label>รหัสอุปกรณ์</label><br>
-              <input type="text" class="form-control" name="txt_eq_id" value="<?php echo $row["eq_name_id"]; ?>">
+              <input type="text" class="form-control"  value="<?php echo $row["eq_name_id"]; ?>" disabled="" >
            </div>
            <div class="form-group">
               <label>ชื่ออุปกรณ์</label>

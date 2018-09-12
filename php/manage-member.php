@@ -72,8 +72,8 @@ require_once('connect.php');
             </div>
             <div class="col-md-6">
                 <legend>Supervisor</legend>
-                <button type="button" class="btn btn-primary btn-sm col-md-1" data-toggle="modal" data-target="#add_sup">
-                    <i class="fa fa-plus"></i>
+                <button type="button" class="btn btn-primary btn-sm col-md-4" data-toggle="modal" data-target="#add_sup">
+                    <i class="fa fa-plus"></i> เพิ่มหัวหน้างาน
                 </button>
                 <table class="table table-hover mt-2">
                     <thead>
